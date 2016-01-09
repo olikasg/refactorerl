@@ -10,4 +10,3 @@
                       _ -> true
              end}.
 #invoke{dir="referl_cluster"}.
-#invoke{dir="referl_test"}.

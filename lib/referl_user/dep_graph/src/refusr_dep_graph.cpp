@@ -1066,7 +1066,7 @@ void start_path_traversal(int ctype, int maxdepth)
 	{
 		stack<Node> st;
 		for(int i = 0; i < (int)CNodes.size(); ++i) st.push(CNodes[i]);
-		thread threads[concurentThreadsSupported];
+        std::vector<thread> threads[concurentThreadsSupported];
 		for(int i = 0; i < concurentThreadsSupported; ++i)
 			threads[i] = thread(thread_man, &st, maxdepth, ctype);
 		for(int i = 0; i < concurentThreadsSupported; ++i) threads[i].join();

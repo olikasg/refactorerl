@@ -89,13 +89,13 @@ using ::snprintf;
 
 #else
 
-#include <tr1/unordered_map>
-#include <tr1/unordered_set>
+#include <unordered_map>
+#include <unordered_set>
 
 namespace std {
-using tr1::hash;
-using tr1::unordered_map;
-using tr1::unordered_set;
+  /* using tr1::hash;
+     using tr1::unordered_map;
+     using tr1::unordered_set; */
 }
 
 #endif

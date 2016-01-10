@@ -480,71 +480,71 @@ YawsIncDir =
 	       filelib:wildcard(join([Dir, "kyoto", "src", "*.c"]))]
       }.
       
-#rule{name = dep_graph,
-      output = 
-	    begin
-	      SOFile =
-		  case os:type() of
-		      {win32, _} -> "dep_graph.dll";
-		      {unix, _} -> "dep_graph.so"
-		  end,
-	      join(["priv", SOFile])
-	    end,
-      action =
-	    begin
-	      SOFile =
-		  case os:type() of
-		      {win32, _} -> "dep_graph.dll";
-		      {unix, _} -> "dep_graph.so"
-		  end,
-	      Name              = basename(File),
-	      SOPath = join([Dir, "priv", SOFile]),
-	      CompileNif = list_to_atom(os:getenv("COMPILE_CPP")),
-	      CppCompiler = os:getenv("CPP_COMPILER"),
-	      BadmatchException = fun() -> 1 = 2 end,
+%% #rule{name = dep_graph,
+%%       output = 
+%% 	    begin
+%% 	      SOFile =
+%% 		  case os:type() of
+%% 		      {win32, _} -> "dep_graph.dll";
+%% 		      {unix, _} -> "dep_graph.so"
+%% 		  end,
+%% 	      join(["priv", SOFile])
+%% 	    end,
+%%       action =
+%% 	    begin
+%% 	      SOFile =
+%% 		  case os:type() of
+%% 		      {win32, _} -> "dep_graph.dll";
+%% 		      {unix, _} -> "dep_graph.so"
+%% 		  end,
+%% 	      Name              = basename(File),
+%% 	      SOPath = join([Dir, "priv", SOFile]),
+%% 	      CompileNif = list_to_atom(os:getenv("COMPILE_CPP")),
+%% 	      CppCompiler = os:getenv("CPP_COMPILER"),
+%% 	      BadmatchException = fun() -> 1 = 2 end,
 	      
-	      case {CompileNif, os:find_executable(CppCompiler)} of
-		  {true, false} ->
-		      io:format("Warning: No g++ compiler found!~n"
-				"The CPP code of ~s has not been compiled!~n",
-				[SOFile]);
-		  {false, _} ->
-              io:format("Warning: the CPP code of ~p has not been compiled!~n",
-                [Name]);		      
-		  {true, _} ->
-		      Cmd = CppCompiler ++ " " ++
-			  case os:type() of
-			      {unix, darwin} -> "-undefined dynamic_lookup -dynamiclib ";
-			      _ -> "-shared "
-			  end ++ "-Wall -fPIC -O3 " ++
-			  join([Dir, "dep_graph", "src", "refusr_dep_graph.cpp"]) ++
-			  " -I " ++ join([code:root_dir(), "usr", "include"]) ++
-			  " -I " ++ join([Dir, "dep_graph", "lib", "lemon-1.3"]) ++
-              " -I " ++ join([Dir, "dep_graph", "include"]) ++
-			  " -o " ++ SOPath ++ " -pthread -std=c++11",
-		      io:format("Compile command:~n~s~n",[Cmd]),
+%% 	      case {CompileNif, os:find_executable(CppCompiler)} of
+%% 		  {true, false} ->
+%% 		      io:format("Warning: No g++ compiler found!~n"
+%% 				"The CPP code of ~s has not been compiled!~n",
+%% 				[SOFile]);
+%% 		  {false, _} ->
+%%               io:format("Warning: the CPP code of ~p has not been compiled!~n",
+%%                 [Name]);		      
+%% 		  {true, _} ->
+%% 		      Cmd = CppCompiler ++ " " ++
+%% 			  case os:type() of
+%% 			      {unix, darwin} -> "-undefined dynamic_lookup -dynamiclib ";
+%% 			      _ -> "-shared "
+%% 			  end ++ "-Wall -fPIC -O3 " ++
+%% 			  join([Dir, "dep_graph", "src", "refusr_dep_graph.cpp"]) ++
+%% 			  " -I " ++ join([code:root_dir(), "usr", "include"]) ++
+%% 			  " -I " ++ join([Dir, "dep_graph", "lib", "lemon-1.3"]) ++
+%%               " -I " ++ join([Dir, "dep_graph", "include"]) ++
+%% 			  " -o " ++ SOPath ++ " -pthread -std=c++11",
+%% 		      io:format("Compile command:~n~s~n",[Cmd]),
 		      
-		      case os:cmd(Cmd) of
-                    ""         -> ok;
-                    MaybeError ->
-                        case string:str(MaybeError, "error:") of
-                            0 ->
-                                io:format("Build ended with warning(s):~n~ts",
-                                          [MaybeError]),
-                                ok;
-                            _ ->
-                                io:format("Build ended with error(s):~n~ts",
-                                          [MaybeError]),
-                                BadmatchException()
-                        end
-                end
-	      end
-	    end,
-      deps =
-	  [{file, F} || F <- 
-               filelib:wildcard(join([Dir, "dep_graph", "lib", "lemon-1.3", "*.cc"])) ++
-	       filelib:wildcard(join([Dir, "dep_graph", "src", "*.cpp"]))]
-      }.
+%% 		      case os:cmd(Cmd) of
+%%                     ""         -> ok;
+%%                     MaybeError ->
+%%                         case string:str(MaybeError, "error:") of
+%%                             0 ->
+%%                                 io:format("Build ended with warning(s):~n~ts",
+%%                                           [MaybeError]),
+%%                                 ok;
+%%                             _ ->
+%%                                 io:format("Build ended with error(s):~n~ts",
+%%                                           [MaybeError]),
+%%                                 BadmatchException()
+%%                         end
+%%                 end
+%% 	      end
+%% 	    end,
+%%       deps =
+%% 	  [{file, F} || F <- 
+%%                filelib:wildcard(join([Dir, "dep_graph", "lib", "lemon-1.3", "*.cc"])) ++
+%% 	       filelib:wildcard(join([Dir, "dep_graph", "src", "*.cpp"]))]
+%%       }.
 
 #rule{name   = nitrogen_site,
       output = join("ebin", basename(File, ".erl")++".beam"),
